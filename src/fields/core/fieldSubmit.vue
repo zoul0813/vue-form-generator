@@ -10,7 +10,7 @@
 		mixins: [ abstractField ],
 
 		methods: {
-			click() {
+			click(evt) {
 				if (this.schema.validateBeforeSubmit === true)
 				{
 					if (!this.$parent.validate()) {
@@ -20,7 +20,7 @@
 				}
 
 				if (isFunction(this.schema.onSubmit))
-					this.schema.onSubmit(this.model, this.schema);
+					this.schema.onSubmit(this.model, this.schema, evt);
 			}
 		}
 	};

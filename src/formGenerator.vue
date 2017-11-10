@@ -1,5 +1,5 @@
 <template lang="pug">
-div.vue-form-generator(v-if='schema != null')
+form.vue-form-generator(v-if='schema != null' v-on:submit.prevent="formSubmit")
 	fieldset(v-if="schema.fields", :is='tag')
 		template(v-for='field in fields')
 			.form-group(v-if='fieldVisible(field)', :class='getFieldRowClasses(field)')
@@ -328,6 +328,10 @@ div.vue-form-generator(v-if='schema != null')
 				let isValid = this.errors.length == 0;
 				this.$emit("validated", isValid, this.errors);
 				return isValid;
+			},
+
+			formSubmit(evt) {
+				this.$emit('submit', this.model);
 			},
 
 			// Clear validation errors
