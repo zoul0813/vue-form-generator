@@ -330,8 +330,8 @@ form.vue-form-generator(v-if='schema != null' v-on:submit.prevent="formSubmit")
 				return isValid;
 			},
 
-			formSubmit(evt) {
-				this.$emit('submit', this.model);
+			formSubmit() {
+				this.$emit("submit", this.model);
 			},
 
 			// Clear validation errors
