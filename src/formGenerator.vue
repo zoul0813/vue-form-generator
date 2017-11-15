@@ -205,6 +205,8 @@ form.vue-form-generator(v-if='schema != null' v-on:submit.prevent="formSubmit")
 
 			// Should field type have a label?
 			fieldTypeHasLabel(field) {
+				if(isNil(field.label)) return false;
+
 				let relevantType = "";
 				if (field.type === "input") {
 					relevantType = field.inputType;
