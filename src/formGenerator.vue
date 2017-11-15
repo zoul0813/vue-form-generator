@@ -17,7 +17,7 @@ form.vue-form-generator(v-if='schema != null' v-on:submit.prevent="formSubmit")
 					span(v-for='(error, index) in fieldErrors(field)', track-by='index') {{ error }}
 
 	template(v-for='group in groups')
-		fieldset(:is='tag')
+		fieldset(:is='tag', :class='getFieldRowClasses(group)')
 			legend(v-if='group.legend') {{ group.legend }}
 			template(v-for='field in group.fields')
 				.form-group(v-if='fieldVisible(field)', :class='getFieldRowClasses(field)')
@@ -191,7 +191,9 @@ form.vue-form-generator(v-if='schema != null' v-on:submit.prevent="formSubmit")
 					baseClasses[field.styleClasses] = true;
 				}
 
-				baseClasses["field-" + field.type] = true;
+				if (!isNil(field.type)) {
+					baseClasses["field-" + field.type] = true;
+				}
 
 				return baseClasses;
 			},
