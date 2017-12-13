@@ -25,7 +25,8 @@ export default {
 	data() {
 		return {
 			errors: [],
-			debouncedValidateFunc: null
+			debouncedValidateFunc: null,
+			debouncedFormatFunction: null,
 		};
 	},
 
@@ -45,33 +46,12 @@ export default {
 
 			set(newValue) {
 				let oldValue = this.value;
-
 				newValue = this.formatValueToModel(newValue);
-
-				let changed = false;
-				if (isFunction(this.schema.set)) {
-					this.schema.set(this.model, newValue);
-					changed = true;
-
-				} else if (this.schema.model) {
-					this.setModelValueByPath(this.schema.model, newValue);
-					changed = true;
-				}
-
-				if (changed) {
-					this.$emit("model-updated", newValue, this.schema.model);
-
-					if (isFunction(this.schema.onChanged)) {
-						this.schema.onChanged.call(this, this.model, newValue, oldValue, this.schema);
-					}
-
-					if (this.$parent.options && this.$parent.options.validateAfterChanged === true) {
-						if (this.$parent.options.validateDebounceTime > 0) {
-							this.debouncedValidate();
-						} else {
-							this.validate();
-						}
-					}
+				
+				if(isFunction(newValue)) {
+					newValue(newValue, oldValue);
+				} else {
+					this.updateModelValue(newValue, oldValue);
 				}
 			}
 		}
@@ -82,7 +62,6 @@ export default {
 			this.clearValidationErrors();
 
 			if (this.schema.validator && this.schema.readonly !== true && this.disabled !== true) {
-
 				let validators = [];
 				if (!isArray(this.schema.validator)) {
 					validators.push(convertValidator(this.schema.validator).bind(this));
@@ -128,12 +107,41 @@ export default {
 
 			return this.errors;
 		},
+
 		debouncedValidate() {
 			if(!isFunction(this.debouncedValidateFunc)) {
 				this.debouncedValidateFunc = debounce(this.validate.bind(this), objGet(this, "$parent.options.validateDebounceTime", 500));
 			}
 			this.debouncedValidateFunc();
 		},
+
+		updateModelValue(newValue, oldValue) {
+			let changed = false;
+			if (isFunction(this.schema.set)) {
+				this.schema.set(this.model, newValue);
+				changed = true;
+			} else if (this.schema.model) {
+				this.setModelValueByPath(this.schema.model, newValue);
+				changed = true;
+			}
+
+			if (changed) {
+				this.$emit("model-updated", newValue, this.schema.model);
+
+				if (isFunction(this.schema.onChanged)) {
+					this.schema.onChanged.call(this, this.model, newValue, oldValue, this.schema);
+				}
+
+				if (this.$parent.options && this.$parent.options.validateAfterChanged === true) {
+					if (this.$parent.options.validateDebounceTime > 0) {
+						this.debouncedValidate();
+					} else {
+						this.validate();
+					}
+				}
+			}
+		},
+
 		clearValidationErrors() {
 			this.errors.splice(0);
 		},
