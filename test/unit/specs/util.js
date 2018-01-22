@@ -20,6 +20,18 @@ export function trigger (el, event, args) {
 	}
 }
 
+// convenience wrapper for $vm.nextTick
+export function nextTick(cb, vm, done) {
+	vm.$nextTick(() => {
+		try {
+			cb();
+			done();
+		} catch(e) {
+			done(e);
+		}
+	});
+}
+
 export function createVueField(test, type, schema = {}, model = null, disabled = false, options) {
 	let elName = type.replace(/([a-zA-Z])([A-Z])/g, "$1-$2").toLowerCase();
 
