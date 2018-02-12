@@ -50,7 +50,15 @@
                             "type": "input",
                             "inputType": "text",
                             "label": "First Name",
-                            "model": "first_name"
+                            "model": "first_name",
+                            "attributes": {
+                                "input": {
+                                    "data-toggle": "tooltip"
+                                },
+                                "wrapper": {
+                                    "data-target": "input"
+                                }
+                            }
                         },
                         {
                             "type": "checkbox",
