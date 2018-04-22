@@ -96,7 +96,7 @@ export default {
 			switch(this.schema.inputType.toLowerCase()) {
 				case "number":
 				case "range":
-					if($event.target.valueAsNumber) {
+					if(isNumber($event.target.valueAsNumber)) {
 						value = $event.target.valueAsNumber;
 					}
 					break;
