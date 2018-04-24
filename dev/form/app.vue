@@ -58,7 +58,7 @@
                     validateAfterLoad: true,
                     validateAfterChanged: true,
                     validateBeforeSave: true,
-                    validateAsync: true,
+                    validateAsync: false,
                 }
             };
         },

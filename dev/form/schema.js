@@ -77,6 +77,25 @@ module.exports = {
             placeholder: "Enter your phone number",
             styleClasses: "half-width"
         }, {
+            type: "input",
+            inputType: "number",
+            model: "age",
+            label: "Age",
+            validator: "number"
+        }, {
+            type: "input",
+            inputType: "number",
+            model: "rank",
+            debounceFormatTimeout: 5000,
+            label: "Rank",
+            validator: "number"
+        }, {
+            type: "input",
+            inputType: "number",
+            model: "income",
+            label: "Income",
+            validator: "number"
+        }, {
             type: 'submit',
             validateBeforeSubmit: true,
             onSubmit(model, schema, $event) {
