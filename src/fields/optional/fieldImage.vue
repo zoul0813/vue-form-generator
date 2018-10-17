@@ -1,20 +1,40 @@
-<template lang="pug">
-	div.wrapper
-		input.form-control.link(type="text", v-show="schema.hideInput !== true", v-model="wrappedValue", :autocomplete="schema.autocomplete", :disabled="disabled", :placeholder="schema.placeholder", :readonly="schema.readonly")
-		input.form-control.file(type="file", v-if="schema.browse !== false", :disabled="disabled", @change="fileChanged", :name="schema.inputName")
-		.preview(:style="previewStyle")
-			.remove(title="Remove image", @click="remove")
+<template>
+	<div class="wrapper">
+		<input class="form-control link"
+			type="text"
+			v-show="fieldOptions.hideInput !== true"
+			v-model="wrappedValue"
+			:autocomplete="fieldOptions.autocomplete"
+			:disabled="disabled"
+			:placeholder="placeholder"
+			:readonly="readonly">
+
+		<input class="form-control file"
+			type="file"
+			v-if="fieldOptions.browse !== false"
+			:disabled="disabled"
+			@change="fileChanged"
+			:name="inputName">
+
+		<div class="preview"
+			:style="previewStyle">
+			<div class="remove"
+				title="Remove image"
+				@click="remove"></div>
+		</div>
+	</div>
 </template>
 
 <script>
 import abstractField from "../abstractField";
 
 export default {
+	name: "field-image",
 	mixins: [abstractField],
 
 	computed: {
 		previewStyle() {
-			if (this.schema.preview !== false) {
+			if (this.fieldOptions.preview !== false) {
 				return {
 					display: "block",
 					"background-image": this.value != null ? "url(" + this.value + ")" : "none"
@@ -42,7 +62,7 @@ export default {
 	watch: {
 		model() {
 			let el = this.$el.querySelector("input.file");
-			if(el) {
+			if (el) {
 				el.value = "";
 			}
 		}
@@ -55,7 +75,7 @@ export default {
 
 		fileChanged(event) {
 			let reader = new FileReader();
-			reader.onload = e => {
+			reader.onload = (e) => {
 				this.value = e.target.result;
 			};
 

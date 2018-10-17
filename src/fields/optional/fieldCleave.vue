@@ -1,5 +1,13 @@
-<template lang="pug">
-	input.form-control(type="text", :value="value", :autocomplete="schema.autocomplete", :disabled="disabled", :placeholder="schema.placeholder", :readonly="schema.readonly", :name="schema.inputName", :id="getFieldID(schema)")
+<template>
+	<input class="form-control"
+		type="text"
+		:value="value"
+		:autocomplete="fieldOptions.autocomplete"
+		:disabled="disabled"
+		:placeholder="placeholder"
+		:readonly="readonly"
+		:name="inputName"
+		:id="fieldID">
 </template>
 
 <script>
@@ -7,6 +15,7 @@ import abstractField from "../abstractField";
 import { defaults } from "lodash";
 
 export default {
+	name: "field-cleave",
 	mixins: [abstractField],
 
 	data() {
@@ -20,7 +29,7 @@ export default {
 			if (window.Cleave) {
 				this.cleave = new window.Cleave(
 					this.$el,
-					defaults(this.schema.cleaveOptions || {}, {
+					defaults(this.fieldOptions, {
 						// Credit Card
 						creditCard: false,
 						// onCreditCardTypeChanged: onCreditCardTypeChanged.bind(this),
@@ -54,7 +63,9 @@ export default {
 					this.$el.addEventListener("input", this.inputChange);
 				}
 			} else {
-				console.warn("Cleave is missing. Please download from https://github.com/nosir/cleave.js/ and load the script in the HTML head section!");
+				console.warn(
+					"Cleave is missing. Please download from https://github.com/nosir/cleave.js/ and load the script in the HTML head section!"
+				);
 			}
 		});
 	},
@@ -73,8 +84,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss">
-.vue-form-generator .field-cleave {
-}
-</style>

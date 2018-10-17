@@ -1,5 +1,15 @@
-<template lang="pug">
-	input.form-control(type="text", v-model="value", :autocomplete="schema.autocomplete", :disabled="disabled", :placeholder="schema.placeholder", :readonly="schema.readonly", :name="schema.inputName",  debounce="500", @focus="geolocate()", :id="getFieldID(schema)")
+<template>
+	<input class="form-control"
+		type="text"
+		v-model="value"
+		:autocomplete="fieldOptions.autocomplete"
+		:disabled="disabled"
+		:placeholder="placeholder"
+		:readonly="readonly"
+		:name="inputName"
+		debounce="500"
+		@focus="geolocate()"
+		:id="fieldID">
 </template>
 
 <script>
@@ -13,6 +23,7 @@ import { isFunction } from "lodash";
 
 /* global google */
 export default {
+	name: "field-googleAddress",
 	mixins: [abstractField],
 
 	data() {
@@ -75,8 +86,8 @@ export default {
 				}
 
 				// Call event in schema
-				if (isFunction(this.schema.onPlaceChanged))
-					this.schema.onPlaceChanged(this.value, data, place, this.model, this.schema);
+				if (isFunction(this.fieldOptions.onPlaceChanged))
+					this.fieldOptions.onPlaceChanged(this.value, data, place, this.model, this.schema);
 			}
 		},
 
@@ -86,7 +97,7 @@ export default {
 		 */
 		geolocate() {
 			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(position => {
+				navigator.geolocation.getCurrentPosition((position) => {
 					let geolocation = {
 						lat: position.coords.latitude,
 						lng: position.coords.longitude

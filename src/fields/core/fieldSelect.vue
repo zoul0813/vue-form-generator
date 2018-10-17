@@ -1,12 +1,31 @@
-<template lang="pug">
-	select.form-control(v-model="value", :disabled="disabled", :name="schema.inputName", :id="getFieldID(schema)", :class="schema.fieldClasses", v-attributes="'input'")
-		option(v-if="!selectOptions.hideNoneSelectedText", :disabled="schema.required", :value="null") {{ selectOptions.noneSelectedText || "&lt;Nothing selected&gt;" }}
+<template>
+	<select class="form-control"
+		v-model="value"
+		:disabled="disabled"
+		:name="inputName"
+		:id="fieldID"
+		:class="fieldClasses"
+		v-attributes="'input'">
+		<option v-if="!fieldOptions.hideNoneSelectedText"
+			:disabled="schema.required"
+			:value="null"> {{ fieldOptions.noneSelectedText || "&lt;Nothing selected&gt;" }}
+		</option>
 
-		template(v-for="item in items")
-			optgroup(v-if="item.group", :label="getGroupName(item)")
-				option(v-if="item.ops", v-for="i in item.ops", :value="getItemValue(i)") {{ getItemName(i) }}
+		<template v-for="item in items">
+			<optgroup v-if="item.group"
+				:label="getGroupName(item)"
+				:key="getItemValue(item)">
+				<option v-if="item.ops"
+					v-for="i in item.ops"
+					:value="getItemValue(i)"
+					:key="getItemValue(i)"> {{ getItemName(i) }}</option>
+			</optgroup>
 
-			option(v-if="!item.group", :value="getItemValue(item)") {{ getItemName(item) }}
+			<option v-if="!item.group"
+				:value="getItemValue(item)"
+				:key="getItemValue(item)"> {{ getItemName(item) }}</option>
+		</template>
+	</select>
 </template>
 
 <script>
@@ -14,13 +33,10 @@ import { isObject, isNil, find } from "lodash";
 import abstractField from "../abstractField";
 
 export default {
+	name: "field-select",
 	mixins: [abstractField],
 
 	computed: {
-		selectOptions() {
-			return this.schema.selectOptions || {};
-		},
-
 		items() {
 			let values = this.schema.values;
 			if (typeof values == "function") {
@@ -41,14 +57,14 @@ export default {
 			let array = [];
 			let arrayElement = {};
 
-			values.forEach(item => {
+			values.forEach((item) => {
 				arrayElement = null;
 
 				if (item.group && isObject(item)) {
 					// There is in a group.
 
 					// Find element with this group.
-					arrayElement = find(array, i => i.group === item.group);
+					arrayElement = find(array, (i) => i.group === item.group);
 
 					if (arrayElement) {
 						// There is such a group.
@@ -98,14 +114,14 @@ export default {
 
 		getItemValue(item) {
 			if (isObject(item)) {
-				if (typeof this.schema["selectOptions"] !== "undefined" && typeof this.schema["selectOptions"]["value"] !== "undefined") {
-					return item[this.schema.selectOptions.value];
+				if (typeof this.fieldOptions["value"] !== "undefined") {
+					return item[this.fieldOptions.value];
 				} else {
 					// Use 'id' instead of 'value' cause of backward compatibility
 					if (typeof item["id"] !== "undefined") {
 						return item.id;
 					} else {
-						throw "`id` is not defined. If you want to use another key name, add a `value` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
+						throw "`id` is not defined. If you want to use another key name, add a `value` property under `fieldOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
 					}
 				}
 			} else {
@@ -115,13 +131,13 @@ export default {
 
 		getItemName(item) {
 			if (isObject(item)) {
-				if (typeof this.schema["selectOptions"] !== "undefined" && typeof this.schema["selectOptions"]["name"] !== "undefined") {
-					return item[this.schema.selectOptions.name];
+				if (typeof this.fieldOptions["name"] !== "undefined") {
+					return item[this.fieldOptions.name];
 				} else {
 					if (typeof item["name"] !== "undefined") {
 						return item.name;
 					} else {
-						throw "`name` is not defined. If you want to use another key name, add a `name` property under `selectOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
+						throw "`name` is not defined. If you want to use another key name, add a `name` property under `fieldOptions` in the schema. https://icebob.gitbooks.io/vueformgenerator/content/fields/select.html#select-field-with-object-items";
 					}
 				}
 			} else {
@@ -131,7 +147,3 @@ export default {
 	}
 };
 </script>
-
-
-<style lang="sass">
-</style>

@@ -1,43 +1,47 @@
-<template lang="pug">
-.wrapper(v-attributes="'wrapper'")
-	input.form-control(
-		:id="getFieldID(schema)",
-		:type="schema.inputType.toLowerCase()",
-		:value="value",
-		@input="onInput",
-		@blur="onBlur",
-		:class="schema.fieldClasses",
-		@change="schema.onChange || null",
-		:disabled="disabled",
-		:accept="schema.accept",
-		:alt="schema.alt",
-		:autocomplete="schema.autocomplete",
-		:checked="schema.checked",
-		:dirname="schema.dirname",
-		:formaction="schema.formaction",
-		:formenctype="schema.formenctype",
-		:formmethod="schema.formmethod",
-		:formnovalidate="schema.formnovalidate",
-		:formtarget="schema.formtarget",
-		:height="schema.height",
-		:list="schema.list",
-		:max="schema.max",
-		:maxlength="schema.maxlength",
-		:min="schema.min",
-		:minlength="schema.minlength",
-		:multiple="schema.multiple",
-		:name="schema.inputName",
-		:pattern="schema.pattern",
-		:placeholder="schema.placeholder",
-		:readonly="schema.readonly",
-		:required="schema.required",
-		:size="schema.size",
-		:src="schema.src",
-		:step="schema.step",
-		:width="schema.width",
-		:files="schema.files"
-		v-attributes="'input'")
-	span.helper(v-if="schema.inputType.toLowerCase() === 'color' || schema.inputType.toLowerCase() === 'range'") {{ value }}
+<template>
+	<div class="wrapper"
+		v-attributes="'wrapper'">
+		<input class="form-control"
+			:id="fieldID"
+			:type="inputType"
+			:value="value"
+			@input="onInput"
+			@blur="onBlur"
+			:class="fieldClasses"
+			@change="schema.onChange || null"
+			:disabled="disabled"
+			:accept="fieldOptions.accept"
+			:alt="fieldOptions.alt"
+			:autocomplete="fieldOptions.autocomplete"
+			:checked="fieldOptions.checked"
+			:dirname="fieldOptions.dirname"
+			:formaction="fieldOptions.formaction"
+			:formenctype="fieldOptions.formenctype"
+			:formmethod="fieldOptions.formmethod"
+			:formnovalidate="fieldOptions.formnovalidate"
+			:formtarget="fieldOptions.formtarget"
+			:height="fieldOptions.height"
+			:list="fieldOptions.list"
+			:max="fieldOptions.max"
+			:maxlength="fieldOptions.maxlength"
+			:min="fieldOptions.min"
+			:minlength="fieldOptions.minlength"
+			:multiple="fieldOptions.multiple"
+			:name="inputName"
+			:pattern="fieldOptions.pattern"
+			:placeholder="placeholder"
+			:readonly="readonly"
+			:required="schema.required"
+			:size="fieldOptions.size"
+			:src="fieldOptions.src"
+			:step="fieldOptions.step"
+			:width="fieldOptions.width"
+			:files="fieldOptions.files"
+			v-attributes="'input'">
+		<span class="helper"
+			v-if="inputType === 'color' || inputType === 'range'"
+			v-text="value"></span>
+	</div>
 </template>
 
 <script>
@@ -52,11 +56,21 @@ const DATETIME_FORMATS = {
 };
 
 export default {
+	name: "field-input",
 	mixins: [abstractField],
+	computed: {
+		inputType() {
+			if (typeof this.fieldOptions.inputType !== "undefined") {
+				return this.fieldOptions.inputType.toLowerCase();
+			} else {
+				console.warn("Missing inputType", this.fieldOptions, this.fieldOptions.inputType);
+			}
+		}
+	},
 	methods: {
 		formatValueToModel(value) {
 			if (value != null) {
-				switch (this.schema.inputType.toLowerCase()) {
+				switch (this.inputType) {
 					case "date":
 					case "datetime":
 					case "datetime-local":
@@ -72,7 +86,7 @@ export default {
 			return value;
 		},
 		formatDatetimeToModel(newValue, oldValue) {
-			let defaultFormat = DATETIME_FORMATS[this.schema.inputType.toLowerCase()];
+			let defaultFormat = DATETIME_FORMATS[this.inputType];
 			let m = fecha.parse(newValue, defaultFormat);
 			if (m !== false) {
 				if (this.schema.format) {
@@ -91,7 +105,7 @@ export default {
 		},
 		onInput($event) {
 			let value = $event.target.value;
-			switch (this.schema.inputType.toLowerCase()) {
+			switch (this.inputType) {
 				case "number":
 				case "range":
 					if (isNumber(parseFloat($event.target.value))) {
@@ -109,7 +123,7 @@ export default {
 	},
 
 	mounted() {
-		switch (this.schema.inputType.toLowerCase()) {
+		switch (this.inputType) {
 			case "number":
 			case "range":
 				this.debouncedFormatFunc = debounce(
@@ -142,7 +156,7 @@ export default {
 	},
 
 	created() {
-		if (this.schema.inputType.toLowerCase() === "file") {
+		if (this.inputType === "file") {
 			console.warn("The 'file' type in input field is deprecated. Use 'file' field instead.");
 		}
 	}

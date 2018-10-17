@@ -1,17 +1,19 @@
-<template lang="pug">
-.wrapper(v-attributes="'wrapper'")
-	input.form-control(
-		:id="getFieldID(schema)",
-		type="file",
-		:name="schema.inputName",
-		@change="onChange",
-		:accept="schema.accept",
-		:multiple="schema.multiple",
-		:placeholder="schema.placeholder",
-		:readonly="schema.readonly",
-		:required="schema.required",
-		:disabled="disabled", 
-		v-attributes="'input'")
+<template >
+	<div class="wrapper"
+		v-attributes="'wrapper'">
+		<input class="form-control"
+			:id="fieldID"
+			type="file"
+			:name="inputName"
+			@change="onChange"
+			:accept="fieldOptions.accept"
+			:multiple="fieldOptions.multiple"
+			:placeholder="placeholder"
+			:readonly="readonly"
+			:required="schema.required"
+			:disabled="disabled"
+			v-attributes="'input'">
+	</div>
 </template>
 
 <script>
@@ -19,12 +21,13 @@ import abstractField from "../abstractField";
 import { isFunction } from "lodash";
 
 export default {
+	name: "field-upload",
 	mixins: [abstractField],
 	methods: {
-		onChange($event){
-			if (isFunction(this.schema.onChanged)) {
+		onChange($event) {
+			if (isFunction(this.fieldOptions.onChanged)) {
 				// Schema has defined onChange method.
-				this.schema.onChanged.call(this, this.model, this.schema, $event, this);
+				this.fieldOptions.onChanged.call(this, this.model, this.schema, $event, this);
 			}
 		}
 	}

@@ -1,5 +1,14 @@
-<template lang="pug">
-	input(type="text", :autocomplete="schema.autocomplete", :data-disable="disabled", :data-max="schema.max", :data-min="schema.min", :data-step="schema.step", :placeholder="schema.placeholder", :readonly="schema.readonly", :name="schema.inputName")
+<template>
+	<input type="text"
+		:autocomplete="fieldOptions.autocomplete"
+		:data-disable="disabled"
+		:data-max="fieldOptions.max"
+		:data-min="fieldOptions.min"
+		:data-step="fieldOptions.step"
+		:placeholder="placeholder"
+		:readonly="readonly"
+
+		:name="inputName">
 </template>
 
 <script>
@@ -8,6 +17,7 @@ import abstractField from "../abstractField";
 import { defaults, isArray } from "lodash";
 
 export default {
+	name: "field-rangeSlider",
 	mixins: [abstractField],
 
 	data() {
@@ -44,7 +54,7 @@ export default {
 
 				let self = this;
 				$(this.$el).ionRangeSlider(
-					defaults(this.schema.rangeSliderOptions || {}, {
+					defaults(this.fieldOptions, {
 						type: "single",
 						grid: true,
 						hide_min_max: true,

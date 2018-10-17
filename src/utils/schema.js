@@ -1,8 +1,8 @@
-import { get, set, each, isObject, isArray, isFunction, cloneDeep } from "lodash";
+import { get, set, each, isObject, isArray, isFunction, isNil, cloneDeep } from "lodash";
 
 // Create a new model by schema default values
 const createDefaultObject = (schema, obj = {}) => {
-	each(schema.fields, field => {
+	each(schema.fields, (field) => {
 		if (get(obj, field.model) === undefined && field.default !== undefined) {
 			if (isFunction(field.default)) {
 				set(obj, field.model, field.default(field, schema, obj));
@@ -15,9 +15,9 @@ const createDefaultObject = (schema, obj = {}) => {
 };
 
 // Get a new model which contains only properties of multi-edit fields
-const getMultipleFields = schema => {
+const getMultipleFields = (schema) => {
 	let res = [];
-	each(schema.fields, field => {
+	each(schema.fields, (field) => {
 		if (field.multi === true) res.push(field);
 	});
 
@@ -30,12 +30,12 @@ const mergeMultiObjectFields = (schema, objs) => {
 
 	let fields = getMultipleFields(schema);
 
-	each(fields, field => {
+	each(fields, (field) => {
 		let mergedValue;
 		let notSet = true;
 		let path = field.model;
 
-		each(objs, obj => {
+		each(objs, (obj) => {
 			let v = get(obj, path);
 			if (notSet) {
 				mergedValue = v;
@@ -54,7 +54,7 @@ const mergeMultiObjectFields = (schema, objs) => {
 const slugifyFormID = (schema, prefix = "") => {
 	// Try to get a reasonable default id from the schema,
 	// then slugify it.
-	if (typeof schema.id !== "undefined") {
+	if (!isNil(schema.id)) {
 		// If an ID's been explicitly set, use it unchanged
 		return prefix + schema.id;
 	} else {

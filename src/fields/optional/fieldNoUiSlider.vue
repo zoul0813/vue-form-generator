@@ -1,5 +1,7 @@
 <template>
-	<div class="slider" :disabled="disabled" :class="{ 'contain-pips': containPips, 'contain-tooltip': containTooltip }"></div>
+	<div class="slider"
+		:disabled="disabled"
+		:class="{ 'contain-pips': containPips, 'contain-tooltip': containTooltip }"></div>
 </template>
 
 <script>
@@ -7,6 +9,7 @@ import abstractField from "../abstractField";
 import { isArray, defaults } from "lodash";
 
 export default {
+	name: "field-noUiSlider",
 	mixins: [abstractField],
 
 	data() {
@@ -25,10 +28,10 @@ export default {
 
 	computed: {
 		containPips() {
-			return this.schema.noUiSliderOptions && typeof this.schema.noUiSliderOptions.pips !== "undefined";
+			return typeof this.fieldOptions.pips !== "undefined";
 		},
 		containTooltip() {
-			return this.schema.noUiSliderOptions && this.schema.noUiSliderOptions.tooltips;
+			return typeof this.fieldOptions.tooltips !== "undefined";
 		}
 	},
 
@@ -60,10 +63,10 @@ export default {
 			if (this.value != null) {
 				return this.value;
 			} else {
-				if (typeof this.schema.noUiSliderOptions !== "undefined" && this.schema.noUiSliderOptions.double) {
-					return [this.schema.min, this.schema.min];
+				if (typeof this.fieldOptions.double !== "undefined") {
+					return [this.fieldOptions.min, this.fieldOptions.min];
 				} else {
-					return this.schema.min;
+					return this.fieldOptions.min;
 				}
 			}
 		}
@@ -75,11 +78,11 @@ export default {
 				this.slider = this.$el;
 				window.noUiSlider.create(
 					this.slider,
-					defaults(this.schema.noUiSliderOptions || {}, {
+					defaults(this.fieldOptions || {}, {
 						start: this.getStartValue(),
 						range: {
-							min: this.schema.min,
-							max: this.schema.max
+							min: this.fieldOptions.min,
+							max: this.fieldOptions.max
 						}
 					})
 				);
