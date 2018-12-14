@@ -1,0 +1,13 @@
+---
+ name: vue-form-generator example
+ description: https://github.com/vue-generators/vue-form-generator
+ authors:
+   - David Higgins (@zoul0813)
+   - Icebob (@icebob)
+ resources:
+   - https://unpkg.com/vue@2.5.17/dist/vue.min.js
+   - https://unpkg.com/vue-form-generator
+   - https://unpkg.com/vue-form-generator/dist/vfg.css
+ normalize_css: no
+ load_type: l
+ ...
